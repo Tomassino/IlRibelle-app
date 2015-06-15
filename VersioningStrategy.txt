@@ -1,0 +1,23 @@
+Here we outline the versioning strategy for the IlRibelle app.
+
+We neeed to upload different versions to the play store, one for each
+architecture (armeabi_v7a, armeabi and x86). To differentiate we need to give
+each apk a different Version Code (the Version Name can be the same). We use a
+six digit version code:
+	AAMMNN
+where AA is a code for the architecture, MM is the major version number and NN
+is the minor. Version codes are:
+	40 - armeabi
+	50 - armeabi_v7a
+	60 - x86
+	99 - all architectures
+Higher version numbers take the precedence over the lower ones, in case more
+packages fit the same device. That's why we use a higher number for armeabi_v7a
+over armeabi. Moreover some devices with x86 CPU can run armeabi or armeabi_v7a,
+so we give x86 a higher version number. The code 99 is not used at the moment,
+it will in case we decide to ship all architectures in the same packages (e.g.
+removing QT libraries and using Ministro). So, for example, the Version Code for
+version 1.23 of the app or the armeabi architecture is:
+	400123
+For the moment we need to change the Version Code by hand every time we change
+architecture (also remember to update the version string in the about page).

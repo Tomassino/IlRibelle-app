@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/application.qml</file>
+        <file>qml/NewsList.qml</file>
+        <file>qml/NewsDisplay.qml</file>
+        <file>qml/CentralItem.qml</file>
+        <file>qml/TopBar.qml</file>
+        <file>qml/MainMenu.qml</file>
+        <file>qml/CentralSubItem.qml</file>
+        <file>qml/DisplayIlRibelle.qml</file>
+        <file>resources/header.png</file>
+        <file>resources/ilribelleHiRes.png</file>
+        <file>resources/ilribelleLoRes.png</file>
+        <file>resources/ilribelleMidRes.png</file>
+        <file>resources/busyIndicator.svg</file>
+        <file>resources/back.svg</file>
+        <file>resources/menu.svg</file>
+        <file>qml/AboutScreen.qml</file>
+        <file>qml/SplashScreen.qml</file>
+        <file>ilribelle_it.qm</file>
+        <file>qml/IlRibelleImage.qml</file>
+        <file>resources/about.html</file>
+        <file>qml/ErrorMessageBox.qml</file>
+        <file>qml/RazAudioPlayer.qml</file>
+        <file>qml/MenuItem.qml</file>
+    </qresource>
+</RCC>
