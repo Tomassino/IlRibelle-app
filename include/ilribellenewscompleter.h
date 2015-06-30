@@ -284,6 +284,11 @@ private:
 	 * \brief The regular expression to get a livestream url (if present)
 	 */
 	static const QRegularExpression m_livestreamUrlRE;
+
+	/**
+	 * \brief The regular expression to get an url in an i-frame
+	 */
+	static const QRegularExpression m_iframeUrlRE;
 };
 
 #endif

@@ -19,6 +19,18 @@
         <oldsource>Click here to watch the stream</oldsource>
         <translation>Guarda la trasmissione</translation>
     </message>
+    <message>
+        <location filename="qml/DisplayIlRibelle.qml" line="160"/>
+        <location filename="qml/DisplayIlRibelle.qml" line="162"/>
+        <source>Watch the video</source>
+        <translation>Guarda il video</translation>
+    </message>
+    <message>
+        <location filename="qml/DisplayIlRibelle.qml" line="171"/>
+        <location filename="qml/DisplayIlRibelle.qml" line="173"/>
+        <source>External link</source>
+        <translation>Collegamento esterno</translation>
+    </message>
 </context>
 <context>
     <name>MainMenu</name>

@@ -125,6 +125,8 @@
 //	  momento)
 //	- Trovare il modo di mettere automaticamente nella pagina di about la
 //	  versione dell'applicazione (per ora bisogna cambiarla a mano)
+//	- Rimuovere i <p></p> intorno agli iframe dall'html dopo il parsing
+//	  (controllare se ci sono e, in caso, rimuoverli)
 
 // A namespace with utility constants
 namespace {
@@ -146,7 +148,8 @@ const QRegularExpression IlRibelleNewsCompleter::m_audioStreamUrlRE(R"regexp(dat
 const QRegularExpression IlRibelleNewsCompleter::m_audioStreamTitleRE(R"regexp(data-title="(.*?)")regexp");
 const QRegularExpression IlRibelleNewsCompleter::m_audioStreamAuthorRE(R"regexp(data-author="(.*?)")regexp");
 const QRegularExpression IlRibelleNewsCompleter::m_audioStreamDurationRE(R"regexp(data-duration-in-ms="(.*?)")regexp");
-const QRegularExpression IlRibelleNewsCompleter::m_livestreamUrlRE(R"regexp(<iframe src="(http://livestream.com/.*?)".*</iframe>)regexp");
+const QRegularExpression IlRibelleNewsCompleter::m_livestreamUrlRE(R"regexp(<iframe.*?src="(http://livestream.com/.*?)".*</iframe>)regexp");
+const QRegularExpression IlRibelleNewsCompleter::m_iframeUrlRE(R"regexp(<iframe.*?src="(.*?)".*</iframe>)regexp");
 
 IlRibelleNewsCompleter::IlRibelleNewsCompleter(IlRibelleChannel* channel, IlRibelleNews* news, const std::function<void()>& workFinishedCallback)
 	: AllDataArrivedNotifee()
@@ -463,8 +466,10 @@ void IlRibelleNewsCompleter::setNewsDescriptionAndExtractStuffs(const QString& n
 		m_news->setData<IlRibelleRoles::hasAudioResource>(false);
 	}
 
-	// Finally extracting livestream urls if present. We don't need to modify the page, so we use outputNewsBody
+	// Extracting livestream urls if present
 	QUrl livestreamUrl;
+	int livestreamUrlREStart = 0;
+	int livestreamUrlRELength = 0;
 	it = m_livestreamUrlRE.globalMatch(outputNewsBody);
 	while (it.hasNext()) {
 		QRegularExpressionMatch match = it.next();
@@ -476,6 +481,9 @@ void IlRibelleNewsCompleter::setNewsDescriptionAndExtractStuffs(const QString& n
 		// so if there is already one link we keep the old one and print a debug message
 		if (!livestreamUrl.isValid() || (livestreamUrl == curLivestreamUrl)) {
 			livestreamUrl = curLivestreamUrl;
+
+			livestreamUrlREStart = match.capturedStart();
+			livestreamUrlRELength = match.capturedLength();
 		} else {
 			qDebug() << "Multiple livestream links in news" << m_news->getData<NewsRoles::title>() << "keeping only the first one (discarded" << curLivestreamUrl << ")";
 		}
@@ -485,9 +493,37 @@ void IlRibelleNewsCompleter::setNewsDescriptionAndExtractStuffs(const QString& n
 	if (livestreamUrl.isValid()) {
 		m_news->setData<IlRibelleRoles::hasLivestreamLink>(true);
 		m_news->setData<IlRibelleRoles::livestreamUrl>(livestreamUrl);
+
+		// Also removing the i-frame from the news
+		outputNewsBody.remove(livestreamUrlREStart, livestreamUrlRELength);
 	} else {
 		m_news->setData<IlRibelleRoles::hasLivestreamLink>(false);
 	}
+
+	// Finally extracting links in iframes
+	it = m_iframeUrlRE.globalMatch(outputNewsBody);
+	QList<int> iframeUrlsStart;
+	QList<int> iframeUrlsLength;
+	QStringList iframeUrls;
+	while (it.hasNext()) {
+		QRegularExpressionMatch match = it.next();
+
+		// Now extracting the url and saving the urls we found along with starting position and length
+		iframeUrls.append(match.captured(1));
+		iframeUrlsStart.append(match.capturedStart());
+		iframeUrlsLength.append(match.capturedLength());
+	}
+
+	// Removing iframes from output. We start from the last so that we do not have to recompute positions
+	// of subsequent matches
+	if (iframeUrlsStart.size() != 0) {
+		for (int i = (iframeUrlsStart.size() - 1); i >= 0; --i) {
+			outputNewsBody.remove(iframeUrlsStart[i], iframeUrlsLength[i]);
+		}
+	}
+
+	// Now saving all urls of iframe in the news
+	m_news->setData<IlRibelleRoles::iframeUrls>(iframeUrls);
 
 	// Setting the body of the news
 	m_news->setData<NewsRoles::description>(outputNewsBody);

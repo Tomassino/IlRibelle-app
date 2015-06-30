@@ -80,12 +80,19 @@ namespace IlRibelleRoles
 	 * \brief The URL of the livestream link
 	 */
 	DEFINE_ROLE(livestreamUrl, toUrl)
+
+	/**
+	 * \brief Additional iframes urls
+	 *
+	 * These are the links found inside iframe tags
+	 */
+	DEFINE_ROLE(iframeUrls, toStringList)
 }
 
 /**
  * \brief The list with additional roles for news from www.ilribelle.com
  */
-using IlRibelleRolesList = RolesList<IlRibelleRoles::mainImageUrl, IlRibelleRoles::mainImageFile, IlRibelleRoles::hasAudioResource, IlRibelleRoles::audioResourceUrl, IlRibelleRoles::audioResourcePath, IlRibelleRoles::audioResourceTitle, IlRibelleRoles::audioResourceAuthor, IlRibelleRoles::audioResourceDuration, IlRibelleRoles::hasLivestreamLink, IlRibelleRoles::livestreamUrl>;
+using IlRibelleRolesList = RolesList<IlRibelleRoles::mainImageUrl, IlRibelleRoles::mainImageFile, IlRibelleRoles::hasAudioResource, IlRibelleRoles::audioResourceUrl, IlRibelleRoles::audioResourcePath, IlRibelleRoles::audioResourceTitle, IlRibelleRoles::audioResourceAuthor, IlRibelleRoles::audioResourceDuration, IlRibelleRoles::hasLivestreamLink, IlRibelleRoles::livestreamUrl, IlRibelleRoles::iframeUrls>;
 
 /**
  * \brief The type for the news of www.ilibelle.com

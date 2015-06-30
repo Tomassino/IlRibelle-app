@@ -137,7 +137,42 @@ CentralSubItem {
 		newsTextItem.text = tmp.replace(/<\$SMALLIMAGEWIDTH\$>/g, newsTextItem.width / 4)
 
 		if (news.roleValue("hasLivestreamLink")) {
-			newsTextItem.text = newsTextItem.text + "<br/><h3><center><a href=\"" + news.roleValue("livestreamUrl") + "\">" + qsTr("Watch the stream") + "</a></center></h3>"
+			newsTextItem.text = newsTextItem.text + "<h3><center><a href=\"" + news.roleValue("livestreamUrl") + "\">" + qsTr("Watch the stream") + "</a></center></h3><br/>"
+		}
+
+		// Cycling all iframe urls and checking what type of links they are
+		var youtubeLinks = [];
+		var otherLinks = [];
+		var numIframes = news.roleValue("iframeUrls").length;
+		for (var i = 0; i < numIframes; i++) {
+			var youtubePattern = new RegExp("^https?://www.youtube.com")
+			if (youtubePattern.test(news.roleValue("iframeUrls")[i])) {
+				youtubeLinks[youtubeLinks.length] = news.roleValue("iframeUrls")[i];
+			} else {
+				otherLinks[youtubeLinks.length] = news.roleValue("iframeUrls")[i];
+			}
+		}
+
+		// Adding all links to youtube videos...
+		for (var i = 0; i < youtubeLinks.length; i++) {
+			newsTextItem.text = newsTextItem.text + "<h3><center><a href=\"" + youtubeLinks[i] + "\">";
+			if (youtubeLinks.length == 1) {
+				newsTextItem.text = newsTextItem.text + qsTr("Watch the video")
+			} else {
+				newsTextItem.text = newsTextItem.text + qsTr("Watch the video") + " " + (i + 1)
+			}
+			newsTextItem.text = newsTextItem.text + "</a></center></h3><br/>"
+		}
+
+		// ... and then all the other external links
+		for (var i = 0; i < otherLinks.length; i++) {
+			newsTextItem.text = newsTextItem.text + "<h3><center><a href=\"" + otherLinks[i] + "\">";
+			if (otherLinks.length == 1) {
+				newsTextItem.text = newsTextItem.text + qsTr("External link")
+			} else {
+				newsTextItem.text = newsTextItem.text + qsTr("External link") + " " + (i + 1)
+			}
+			newsTextItem.text = newsTextItem.text + "</a></center></h3><br/>"
 		}
 	}
 
