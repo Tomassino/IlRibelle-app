@@ -1259,14 +1259,23 @@ void Channel<RolesListType, NewsType>::insertNews(std::unique_ptr<NewsType>&& ne
 		// Setting the callback for the news to our function
 		news->addCallbackForSetData([this, newsId = news->id()](int roleIndex) { this->newsDataChanged(roleIndex, newsId); });
 
-		// Emitting signals before and after the news ahs been added
+		// Emitting signals before and after the news has been added
 		emit aboutToAddNews(destIndex);
 
 		const unsigned int id = news->id();
 		NewsType* const addedNews = news.release();
 		m_news.insert(destIndex, addedNews);
+
 		// Putting the news id and index in the map
 		m_newsIdToIndex[id] = destIndex;
+		// As the index of news after the inserted one have changed, we have to update the values
+		// in the map as well
+		for (auto it = m_newsIdToIndex.begin(); it != m_newsIdToIndex.end(); ++it) {
+			if (it.value() > destIndex) {
+				it.value() += 1;
+			}
+		}
+
 		// Also saving the association between news link and id
 		m_newsURLToId[addedNews->template getData<NewsRoles::link>()] = id;
 
