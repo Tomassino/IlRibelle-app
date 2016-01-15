@@ -141,7 +141,7 @@ namespace {
 const QRegularExpression IlRibelleNewsCompleter::m_checkFiniRE(R"regexp(^<p><a href="(http://www.ilribelle.com/archivio-editoriali-fini.*?)">)regexp");
 const QRegularExpression IlRibelleNewsCompleter::m_imgTagRE(R"regexp(<img .*?/>)regexp");
 const QRegularExpression IlRibelleNewsCompleter::m_imgWidthRE(R"regexp(style\s*=\s*".*width:\s*(\d+)px.*")regexp");
-const QRegularExpression IlRibelleNewsCompleter::m_imgUrlRE(R"regexp(src\s*=\s*"([^"]+)[.](.*)[?](.*)")regexp");
+const QRegularExpression IlRibelleNewsCompleter::m_imgUrlRE(R"regexp(src\s*=\s*"([^"]+)[.](.*)[?](.*?)")regexp");
 const QRegularExpression IlRibelleNewsCompleter::m_raz24UrlRE(R"regexp(<a.*?href="((?:http://raz24\.com|https://raz24\.squarespace\.com)/raz24news/.*?)")regexp");
 const QRegularExpression IlRibelleNewsCompleter::m_audioStreamInfoRE(R"regexp(<div\s+class="sqs-audio-embed"([^<]*)>)regexp");
 const QRegularExpression IlRibelleNewsCompleter::m_audioStreamUrlRE(R"regexp(data-url="(.*?)")regexp");
@@ -401,7 +401,8 @@ void IlRibelleNewsCompleter::setNewsDescriptionAndExtractStuffs(const QString& n
 
 		// The image url and the file where the image will be saved
 		const QString imageExt = urlMatch.captured(2);
-		const QString imageUrl = "http://www.ilribelle.com/" + urlMatch.captured(1) + "." + urlMatch.captured(2) + "?" + urlMatch.captured(3);
+		const QString imagePath = (urlMatch.captured(1).startsWith("/") ? "" : "/") + urlMatch.captured(1);
+		const QString imageUrl = "http://www.ilribelle.com" + imagePath + "." + imageExt + "?" + urlMatch.captured(3);
 		const QString imageFile = m_channel->createFileForNews(newsIndex, imageExt);
 
 //qDebug() << ((unsigned long) this) << m_news->id() << "Found image: " << match.captured() << " - width: " << imgWidth << " - ext: " << imageExt << " - url: " << imageUrl << " - file" << imageFile;

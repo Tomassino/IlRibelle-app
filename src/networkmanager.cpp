@@ -83,7 +83,7 @@ namespace __internal {
 
 		QNetworkReply* const reply = m_notifee->reply(m_id);
 
-//qDebug() << "NetworkReplyHandler" << m_id << "Request for " << reply->url() << " retcode" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+qDebug() << "NetworkReplyHandler" << m_id << "Request for " << reply->url() << " retcode" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 
 		// Checking that there was no error
 		if (reply->error() == QNetworkReply::NoError) {
